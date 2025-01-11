@@ -37,6 +37,16 @@ public class Player_Controller : MonoBehaviour
 
         rb.AddForce(movement * speed);
     }
-
+    //called when the player collides with a game object
+    void OnTriggerEnter(Collider other)
+    {
+        //checks that the object is in the PickUp catagory
+        if(other.gameObject.CompareTag("PickUp"))
+        {
+            //disables the game object
+            other.gameObject.SetActive(false);
+        }
+        
+    }
 
 }
