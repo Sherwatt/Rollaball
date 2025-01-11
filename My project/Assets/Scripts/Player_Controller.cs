@@ -3,14 +3,21 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 //allows the game engine to
 
 public class Player_Controller : MonoBehaviour
 {
 
     public float speed = 0;
+
+    public TextMeshProUGUI countText;
     //creates an unseen variable that references the Rigidbody for the physics engine, or something like that
     private Rigidbody rb;
+    //creates the int value used for showing the player's score
+    private int count;
+
+    public GameObject winTextObject;
 
     //these floating points will allow the movementVector to be used in a context where you're only supposed to use Vector3 data
     private float movementX;
@@ -19,7 +26,10 @@ public class Player_Controller : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        winTextObject.SetActive(false); //hides the win text at the start of the game
         rb = GetComponent<Rigidbody>();
+        count = 0;
+        SetCountText();
     }
 
     void OnMove(InputValue movementValue)
@@ -31,7 +41,15 @@ public class Player_Controller : MonoBehaviour
         movementY = movementVector.y;
     }
 
-        private void FixedUpdate()
+    void SetCountText()
+    {
+        countText.text = "Count: " + count.ToString();
+        if (count >= 12)
+        {
+            winTextObject.SetActive(true); //displays win text when all the pickups are collected
+        }
+    }
+    private void FixedUpdate()
     {
         Vector3 movement = new Vector3(movementX, 0.0f, movementY);
 
@@ -45,6 +63,10 @@ public class Player_Controller : MonoBehaviour
         {
             //disables the game object
             other.gameObject.SetActive(false);
+            //increases the count
+            count = count + 1;
+            //changes the text onscreen
+            SetCountText();
         }
         
     }
