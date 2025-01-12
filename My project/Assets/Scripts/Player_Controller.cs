@@ -31,6 +31,12 @@ public class Player_Controller : MonoBehaviour
         count = 0;
         SetCountText();
     }
+    private void FixedUpdate()
+    {
+        Vector3 movement = new Vector3(movementX, 0.0f, movementY);
+
+        rb.AddForce(movement * speed);
+    }
 
     void OnMove(InputValue movementValue)
     {
@@ -47,14 +53,21 @@ public class Player_Controller : MonoBehaviour
         if (count >= 12)
         {
             winTextObject.SetActive(true); //displays win text when all the pickups are collected
+            Destroy(GameObject.FindGameObjectWithTag("Enemy"));
         }
     }
-    private void FixedUpdate()
-    {
-        Vector3 movement = new Vector3(movementX, 0.0f, movementY);
 
-        rb.AddForce(movement * speed);
+    private void OnCollisionEnter(Collision collision)
+    {
+        //strange issue here, this is only called if the player has moved
+        if (collision.gameObject.CompareTag("Enemy")) 
+        {
+            Destroy(gameObject); //destroys the player
+            winTextObject.gameObject.SetActive(true);
+            winTextObject.GetComponent<TextMeshProUGUI>().text = "You Lose!"; //shows text
+        }
     }
+
     //called when the player collides with a game object
     void OnTriggerEnter(Collider other)
     {
